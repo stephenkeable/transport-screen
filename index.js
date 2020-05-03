@@ -123,6 +123,7 @@ function getBusTimes(stopCode, busNumbers, callback) {
 
 app.get('/', function(req, res) {
   let stations = new Array();
+  // TODO: Refactor to use promiseAll
   getTimes("ENF", function(dataEnfieldTown) {
     stations.push(dataEnfieldTown);
 
