@@ -1,0 +1,85 @@
+#%RAML 0.8
+---
+title: TransportAPI
+baseUri: https://transportapi.com/v3
+version: v3
+mediaType: application/json
+
+documentation:
+  - title: Sign up and API keys
+    content: !include documentation/sign_up_and_api_keys.md
+  - title: Train station references
+    content: !include documentation/train_station_references.md
+  - title: Bus information
+    content: !include documentation/bus.md
+  - title: Time windows
+    content: !include documentation/time_windows.md
+  - title: Decimal degrees
+    content: !include documentation/decimal_degree_format.md
+  - title: Location referencing for journey planning
+    content: !include documentation/location_referencing.md
+
+schemas:
+  - places: !include schemas/places.json
+  - train-live: !include schemas/train/live.json
+  - train-timetable: !include schemas/train/timetable.json
+  - train-service-timetable: !include schemas/train/service_timetable.json
+  - bus-service: !include schemas/bus/service.json
+  - bus-live: !include schemas/bus/live.json
+  - bus-stop-timetable: !include schemas/bus/stop_timetable.json
+  - bus-departure-timetable: !include schemas/bus/departure_timetable.json
+  - journey-public: !include schemas/journey/public.json
+  - journey-car: !include schemas/journey/car.json
+  - journey-cycle: !include schemas/journey/cycle.json
+
+traits:
+  - authenticated: !include traits/authenticated.raml
+  - limited: !include traits/authenticated.raml
+  - paginated: !include traits/paginated.raml
+
+resourceTypes:
+  - train-updates-live: !include resource_types/train/updates-live.raml
+  - train-updates-timetable: !include resource_types/train/updates-timetable.raml
+  - journey-public: !include resource_types/journey/public.raml
+  - location-referencing: !include resource_types/journey/location-referencing.raml
+
+/uk/places.json:
+  !include endpoints/places.raml
+
+/uk/train:
+  /station/{station_code}/{date}/{time}/timetable.json:
+    !include endpoints/train/timetable.raml
+
+  /station/{station_code}/live.json:
+    !include endpoints/train/live.raml
+
+  /service/{service}/{date}/{time}/timetable.json:
+    !include endpoints/train/service_timetable.raml
+
+/uk/bus:
+  /services/{operator}:{line}.json:
+    !include endpoints/bus/service.raml
+
+  /stop/{atcocode}/live.json:
+    !include endpoints/bus/live.raml
+
+  /stop/{atcocode}/{date}/{time}/timetable.json:
+    !include endpoints/bus/stop_timetable.raml
+
+  /route/{operator}/{line}/{direction}/{atcocode}/{date}/{time}/timetable.json:
+    !include endpoints/bus/departure_timetable.raml
+
+/uk/public/journey:
+  /from/{from}/to/{to}.json:
+    !include endpoints/journey/public.raml
+
+  /from/{from}/to/{to}/{type}/{date}/{time}.json:
+    !include endpoints/journey/public_extended.raml
+
+/uk/car/journey:
+  /from/{from}/to/{to}.json:
+    !include endpoints/journey/car.raml
+
+/uk/cycle/journey:
+  /from/{from}/to/{to}.json:
+    !include endpoints/journey/cycle.raml
